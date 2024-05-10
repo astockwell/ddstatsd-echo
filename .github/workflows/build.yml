@@ -1,0 +1,51 @@
+name: Build and Release Cross-Platform Binaries
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Get dependencies
+        run: go get -v -t -d ./...
+
+      - name: Build Binary (Linux)
+        env:
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -o ddstatsd-echo--linux-amd64
+
+      - name: Build Binary (Mac x64)
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+        run: go build -o ddstatsd-echo--darwin-amd64
+
+      - name: Build Binary (Mac ARM64)
+        env:
+          GOOS: darwin
+          GOARCH: arm64
+        run: go build -o ddstatsd-echo--darwin-arm64
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: Auto-generated release
+          files: |
+            ddstatsd-echo-linux-amd64
+            ddstatsd-echo-darwin-amd64
+            ddstatsd-echo-darwin-arm64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
