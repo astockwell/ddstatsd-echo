@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build and Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -44,8 +44,8 @@ jobs:
         with:
           body: Auto-generated release
           files: |
-            ddstatsd-echo-linux-amd64
-            ddstatsd-echo-darwin-amd64
-            ddstatsd-echo-darwin-arm64
+            ddstatsd-echo--linux-amd64
+            ddstatsd-echo--darwin-amd64
+            ddstatsd-echo--darwin-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
